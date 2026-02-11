@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Favicon Generator</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            font-family: system-ui;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin: 1rem 0;
+        }
+        button {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Favicon Generator - Emmanuel Rodas</h1>
+        <canvas id="canvas" width="512" height="512"></canvas>
+        <br>
+        <button onclick="downloadPNG(512)">Download 512x512 PNG</button>
+        <button onclick="downloadPNG(192)">Download 192x192 PNG</button>
+        <button onclick="downloadPNG(32)">Download 32x32 ICO</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawFavicon(size) {
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Create gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#dc2626');
+            gradient.addColorStop(1, '#991b1b');
+            
+            // Draw circle
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(size/2, size/2, size/2 - 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw letter E
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.6}px Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('E', size/2, size/2);
+        }
+
+        function downloadPNG(size) {
+            drawFavicon(size);
+            canvas.toBlob(blob => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = size === 32 ? 'favicon.ico' : `favicon-${size}.png`;
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        // Draw initial favicon
+        drawFavicon(512);
+    </script>
+</body>
+</html>

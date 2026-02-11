@@ -3,21 +3,32 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
+		
+		<!-- Favicons -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="alternate icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg" />
+		
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
+		<title>Emmanuel Rodas - IT Project Manager</title>
+		<meta name="description" content="Project Manager with 11+ years of experience in technology and innovation. Specialized in Scrum, Kanban, and Lean Six Sigma." />
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	</head>
 	<body>
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
+	@import '/src/styles/global.css';
+
 	html,
 	body {
 		margin: 0;
 		width: 100%;
 		height: 100%;
+		background-color: var(--color-bg);
 	}
 </style>

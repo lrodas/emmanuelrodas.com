@@ -1,0 +1,1163 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ui, content, defaultLang } from '../i18n/ui';
+import profileImage from '../assets/profile.jpeg';
+
+export interface Props {
+  lang: 'en' | 'es';
+}
+
+// Type definitions for content
+interface PortfolioItem {
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+}
+
+interface Reference {
+  name: string;
+  role: string;
+  company: string;
+  contact: string;
+}
+
+const { lang } = Astro.props;
+
+const t = ui[lang];
+const c = content[lang];
+
+const portfolioItems: PortfolioItem[] = c.portfolio as PortfolioItem[];
+const trajectory = c.trajectory;
+const techStack = c.techStack;
+const certifications = c.certifications;
+const references: Reference[] = c.references as Reference[];
+
+const currentPath = Astro.url.pathname;
+const isSpanish = lang === 'es';
+
+let switchPath;
+if (isSpanish) {
+  switchPath = currentPath.replace(/^\/es/, '') || '/';
+} else {
+  const cleanPath = currentPath.replace(/^\/en/, '') || '/';
+  switchPath = cleanPath === '/' ? '/es' : `/es${cleanPath}`;
+}
+---
+
+<Layout>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="logo">
+        <div class="logo-icon">E</div>
+        Emmanuel.
+      </a>
+      <div class="nav-links">
+        <a href="#about">{t['nav.about']}</a>
+        {portfolioItems.length > 0 && <a href="#portfolio">{t['nav.portfolio']}</a>}
+        <a href="#trajectory">{t['nav.trajectory']}</a>
+        <a href="#technical">{t['nav.technical']}</a>
+        <a href="#academic">{t['nav.academic']}</a>
+        <a href="#references">{t['nav.references']}</a>
+      </div>
+      <div class="action-group">
+        <a href={switchPath} class="lang-switch">
+          {isSpanish ? 'EN' : 'ES'}
+        </a>
+        <a href="#contact" class="btn btn-primary">{t['nav.contact']}</a>
+      </div>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header id="about" class="hero section-padding">
+    <div class="container hero-container">
+      <div class="hero-image-wrapper">
+        <img src={profileImage.src} alt="Emmanuel Rodas - Profile" class="hero-image" />
+      </div>
+      <div class="hero-content">
+        <span class="hero-subtitle slide-up">{t['hero.subtitle']}</span>
+        <h1 class="hero-title slide-up" style="transition-delay: 0.2s">{t['hero.title.1']} <span class="highlight">{t['hero.title.2']}</span> {t['hero.title.3']}</h1>
+        <p class="hero-description slide-up" style="transition-delay: 0.4s">{t['hero.description']}</p>
+        <div class="hero-meta slide-up" style="transition-delay: 0.6s">
+          <span class="meta-item">📍 {t['hero.location']}</span>
+          <span class="meta-item">🎓 {t['hero.education']}</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Strategic Portfolio -->
+  {portfolioItems.length > 0 && (
+    <section id="portfolio" class="section-padding">
+      <div class="container">
+        <h2 class="section-title fade-in">{t['section.portfolio']}</h2>
+        <div class="portfolio-grid">
+          {portfolioItems.map(item => (
+            <article class="portfolio-card">
+              <div class="card-image-wrapper">
+                <img src={item.image} alt={item.title} class="card-image" />
+                <div class="card-tags">
+                  {item.tags.map(tag => <span class="tag">{tag}</span>)}
+                </div>
+              </div>
+              <div class="card-content">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+                <a href="#" class="read-more">{t['portfolio.readMore']}</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Professional Trajectory -->
+  <section id="trajectory" class="section-padding">
+    <div class="container">
+      <h2 class="section-title fade-in">{t['section.trajectory']}</h2>
+      <div class="timeline">
+        {trajectory.map((item, index) => (
+          <div class={`timeline-item ${index % 2 === 0 ? 'right' : 'left'} fade-in`}>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="period">{item.period}</span>
+                <h3>{item.role}</h3>
+                <span class="company">{item.company}</span>
+              </div>
+              <ul class="timeline-details">
+                {item.details.map(detail => <li>{detail}</li>)}
+              </ul>
+            </div>
+            <div class="timeline-dot"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Foundation -->
+  <section id="technical" class="section-padding">
+    <div class="container">
+      <h2 class="section-title fade-in">{t['section.technical']}</h2>
+      <div class="tech-grid">
+        {techStack.map(stack => (
+          <div class="tech-card stagger-item">
+            <div class="tech-icon-wrapper">
+              <span class="tech-icon-placeholder">
+                {stack.icon === 'code' ? '💻' : stack.icon === 'cloud' ? '☁️' : '📋'}
+              </span>
+            </div>
+            <h3>{stack.title}</h3>
+            <ul>
+              {stack.items.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+        
+        <div class="tech-card highlight stagger-item" style="transition-delay: 0.4s">
+          <div class="tech-icon-wrapper">
+            <span class="tech-icon-placeholder">🛡️</span>
+          </div>
+          <h3>{t['tech.specialized.title']}</h3>
+          <p class="special-title">{t['tech.specialized.degree']}</p>
+          <p class="special-desc">{t['tech.specialized.desc']}</p>
+        </div>
+      </div>
+
+      <!-- Tech Logos Strip (Placeholder) -->
+      <div class="tech-logos">
+        <div class="logo-item"></div>
+        <div class="logo-item"></div>
+        <div class="logo-item"></div>
+        <div class="logo-item"></div>
+        <div class="logo-item"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Academic & Certs -->
+  <section id="academic" class="section-padding">
+    <div class="container split-section">
+      <div class="academic">
+        <h2 class="section-title fade-in">{t['section.academic']}</h2>
+        <div class="academic-card">
+          <div class="icon-box">🎓</div>
+          <div class="content">
+            <h3>{t['academic.masters']} <span class="badge">{t['academic.specialized']}</span></h3>
+            <p>{t['academic.masters.inst']}</p>
+          </div>
+        </div>
+        <div class="academic-card">
+          <div class="icon-box">🎓</div>
+          <div class="content">
+            <h3>{t['academic.bachelors']}</h3>
+            <p>{t['academic.bachelors.inst']}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="certs">
+        <h2 class="section-title fade-in">{t['section.certs']}</h2>
+        {certifications.map(cert => (
+          <div class="cert-card">
+            <div class="icon-box check">✓</div>
+            <div class="content">
+              <h3>{cert.title}</h3>
+              <p>{cert.issuer}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- References -->
+  {references && references.length > 0 && (
+    <section id="references" class="section-padding bg-darker">
+      <div class="container">
+        <h2 class="section-title fade-in">{t['section.references']}</h2>
+        <div class="references-grid">
+          {references.map((ref, index) => (
+            <div class="reference-card stagger-item" style={`transition-delay: ${index * 0.2}s`}>
+              <h3>{ref.name}</h3>
+              <span class="ref-role">{ref.role} | {ref.company}</span>
+              <p class="ref-contact">{ref.contact}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Footer CTA -->
+  <footer id="contact" class="footer-cta section-padding">
+    <div class="container">
+      <div class="cta-box">
+        <div class="cta-content">
+          <h2>{t['footer.title']}</h2>
+          <p>{t['footer.desc']}</p>
+          <div class="contact-details">
+            <p>📧 emmanuel.camposeco@hotmail.com</p>
+            <p>🌐 www.emmanuelrodas.com</p>
+          </div>
+        </div>
+        <div class="cta-actions">
+          <a href="mailto:emmanuel.camposeco@hotmail.com" class="btn btn-white">{t['footer.email']}</a>
+          <div class="social-links">
+            <a href="https://www.linkedin.com/in/emmanuelrodas" target="_blank" rel="noopener noreferrer" class="social-icon" title="LinkedIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <div class="logo-small">Emmanuel.</div>
+        <p>{t['footer.rights']}</p>
+        <div class="footer-nav">
+          <a href="#about">{t['nav.about']}</a>
+          <a href="#trajectory">{t['nav.trajectory']}</a>
+          <a href="#technical">{t['nav.technical']}</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</Layout>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.1
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // Only animate once
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.fade-in, .slide-up, .stagger-item').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Mobile menu toggle
+  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+  const navLinks = document.querySelector('.nav-links');
+  const navbar = document.querySelector('.navbar');
+
+  mobileMenuToggle?.addEventListener('click', () => {
+    mobileMenuToggle.classList.toggle('active');
+    navLinks?.classList.toggle('active');
+    navbar?.classList.toggle('menu-open');
+  });
+
+  // Close menu when clicking a link
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenuToggle?.classList.remove('active');
+      navLinks?.classList.remove('active');
+      navbar?.classList.remove('menu-open');
+    });
+  });
+</script>
+
+
+<style>
+  /* Animations */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .slide-up {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+
+  .slide-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered delays for child items */
+  .stagger-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+  }
+
+  .stagger-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Applying delays via nth-child logic in JS or CSS for static lists */
+  .tech-card:nth-child(1) { transition-delay: 0.1s; }
+  .tech-card:nth-child(2) { transition-delay: 0.2s; }
+  .tech-card:nth-child(3) { transition-delay: 0.3s; }
+  
+  .portfolio-card:nth-child(1) { transition-delay: 0.1s; }
+  .portfolio-card:nth-child(2) { transition-delay: 0.2s; }
+  .portfolio-card:nth-child(3) { transition-delay: 0.3s; }
+
+  /* Enhanced Hover Effects */
+  .portfolio-card:hover .card-image {
+    transform: scale(1.05);
+    transition: transform 0.5s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-accent-rgb), 0.3);
+  }
+
+  /* Local Styles */
+  
+  /* Navbar */
+  .navbar {
+    padding: 1.5rem 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: rgba(17, 17, 17, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .logo-icon {
+    background: var(--color-accent);
+    color: white;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .nav-links a {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .action-group {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .lang-switch {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+
+  .lang-switch:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  
+  .nav-links a:hover {
+    color: var(--color-accent);
+  }
+  
+  /* ... Rest of styles remain mostly same, just slight adjustments if needed ... */
+  
+  .btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary {
+    background: var(--color-accent);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background: var(--color-accent-light);
+  }
+
+  .btn-white {
+    background: white;
+    color: var(--color-bg);
+  }
+  
+  .btn-white:hover {
+    background: #f0f0f0;
+  }
+
+  /* Hero */
+  .hero {
+    margin-top: 80px;
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+  }
+  
+  .hero-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-image-wrapper {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    border: 1px solid var(--color-border);
+  }
+  
+  .hero-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(100%);
+    transition: filter 0.3s;
+  }
+  
+  .hero-image:hover {
+    filter: grayscale(0%);
+  }
+
+  .hero-subtitle {
+    display: block;
+    color: var(--color-accent);
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .hero-title {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+  
+  .highlight {
+    color: var(--color-accent);
+  }
+  
+  .hero-description {
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+    max-width: 50ch;
+    margin-bottom: 2rem;
+  }
+  
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Titles */
+  .section-title {
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Portfolio */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .portfolio-card {
+    background: var(--color-surface-1);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  
+  .portfolio-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .card-image-wrapper {
+    position: relative;
+    height: 200px;
+  }
+  
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .card-tags {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+  }
+  
+  .tag {
+    background: var(--color-accent);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2px;
+    text-transform: uppercase;
+  }
+  
+  .card-content {
+    padding: 1.5rem;
+  }
+  
+  .card-content h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+  }
+  
+  .card-content p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .read-more {
+    color: var(--color-accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background: var(--color-border);
+    transform: translateX(-50%);
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin-bottom: 4rem;
+    width: 50%;
+  }
+
+  .timeline-item.right {
+    left: 50%;
+    padding-left: 3rem;
+  }
+  
+  .timeline-item.left {
+    left: 0;
+    padding-right: 3rem;
+    text-align: right;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--color-accent);
+    border-radius: 50%;
+  }
+
+  .timeline-item.right .timeline-dot {
+    left: -6px;
+  }
+  
+  .timeline-item.left .timeline-dot {
+    right: -6px;
+  }
+  
+  .timeline-header .period {
+    color: var(--color-accent);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .timeline-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .company {
+    color: var(--color-text-muted);
+    font-style: italic;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .timeline-details {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+  
+  .timeline-details li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* Tech */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  
+  .tech-card {
+    background: var(--color-surface-1);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+  }
+  
+  .tech-card.highlight {
+    background: linear-gradient(135deg, var(--color-accent) 0%, #e04040 100%);
+    border: none;
+    color: white;
+  }
+
+  .tech-card.highlight .special-title {
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .tech-card.highlight .special-desc {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.9);
+  }
+  
+  .tech-card ul li {
+    color: var(--color-text-muted);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  .tech-card ul li::before {
+    content: "•";
+    color: var(--color-accent);
+    margin-right: 0.5rem;
+  }
+  
+  .tech-icon-placeholder {
+    display: inline-block;
+    padding: 0.5rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 4px;
+    margin-bottom: 1rem;
+  }
+  
+  .tech-logos {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    opacity: 0.3;
+  }
+  
+  .logo-item {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 4px;
+  }
+
+  /* Academic & Split */
+  .split-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+  
+  .academic-card, .cert-card {
+    background: var(--color-surface-1);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .icon-box {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  
+  .icon-box.check {
+    color: var(--color-accent);
+  }
+  
+  .badge {
+    background: #331111;
+    color: var(--color-accent);
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  /* Certs & Academic */
+  /* ... previous styles ... */
+
+  /* References */
+  .bg-darker {
+    background: rgba(0,0,0,0.2);
+  }
+
+  .references-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .reference-card {
+    background: var(--color-surface-1);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    transition: transform 0.3s;
+  }
+
+  .reference-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-accent);
+  }
+
+  .reference-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: white;
+  }
+
+  .ref-role {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .ref-contact {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* Footer CTA */
+  .footer-cta {
+    background: var(--color-bg);
+  }
+
+  .contact-details {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contact-details p {
+    color: white;
+    font-size: 1rem;
+  }
+
+  .cta-box {
+
+    background: var(--color-accent);
+    border-radius: 16px;
+    padding: 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+  }
+  
+  .cta-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .cta-content p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+  
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    color: white;
+  }
+
+  .social-icon:hover {
+    background: white;
+    color: var(--color-accent);
+    transform: translateY(-3px);
+  }
+
+  .social-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+  }
+  
+  .footer-nav {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer-nav a:hover {
+    color: white;
+  }
+
+  /* Mobile Menu */
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 101;
+  }
+
+  .mobile-menu-toggle span {
+    width: 24px;
+    height: 2px;
+    background: white;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+  }
+
+  .mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+
+  .mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+  @media (max-width: 968px) {
+    .mobile-menu-toggle {
+      display: flex;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: rgba(17, 17, 17, 0.98);
+      backdrop-filter: blur(20px);
+      flex-direction: column;
+      padding: 2rem;
+      gap: 1.5rem;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .nav-links.active {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .nav-links a {
+      font-size: 1.1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .action-group {
+      gap: 1rem;
+    }
+
+    .action-group .btn-primary {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 0 1rem;
+    }
+
+    .section-padding {
+      padding: 3rem 0;
+    }
+    
+    .hero-container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .hero-image-wrapper {
+      order: -1;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .hero-content {
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+      line-height: 1.2;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+
+    .hero-meta {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .split-section {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .timeline::before {
+      left: 0;
+    }
+    
+    .timeline-item {
+      width: 100%;
+      left: 0 !important;
+      padding-left: 2rem !important;
+      padding-right: 0 !important;
+      text-align: left !important;
+    }
+    
+    .timeline-dot {
+      left: -6px !important;
+      right: auto !important;
+    }
+
+    .tech-grid,
+    .portfolio-grid,
+    .references-grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .cta-box {
+      flex-direction: column;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .cta-content h2 {
+      font-size: 1.75rem;
+    }
+
+    .cta-content p {
+      font-size: 1rem;
+    }
+
+    .cta-actions {
+      align-items: center;
+      margin-top: 1.5rem;
+      width: 100%;
+    }
+
+    .cta-actions .btn {
+      width: 100%;
+      text-align: center;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+
+    .footer-nav {
+      justify-content: center;
+    }
+
+    .contact-details {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero-title {
+      font-size: 1.75rem;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+    }
+
+    .cta-content h2 {
+      font-size: 1.5rem;
+    }
+
+    .timeline-item {
+      padding-left: 1.5rem !important;
+    }
+
+    .card-content,
+    .reference-card,
+    .tech-card {
+      padding: 1.25rem;
+    }
+  }
+</style>
+
