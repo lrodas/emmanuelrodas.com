@@ -15,6 +15,9 @@ export const ui = {
     'nav.references': 'References',
     'nav.contact': 'Contact Me',
     
+    'seo.title': 'Emmanuel Rodas - IT Project Manager',
+    'seo.description': 'Project Manager with 11+ years of experience in technology and innovation. Specialized in Scrum, Kanban, and Lean Six Sigma.',
+    
     'hero.subtitle': '11+ YEARS OF INNOVATION EXPERIENCE',
     'hero.title.1': 'IT',
     'hero.title.2': 'Project',
@@ -57,6 +60,9 @@ export const ui = {
     'nav.academic': 'Educación',
     'nav.references': 'Referencias',
     'nav.contact': 'Contáctame',
+
+    'seo.title': 'Emmanuel Rodas - IT Project Manager',
+    'seo.description': 'Project Manager con más de 11 años de experiencia en tecnología e innovación. Especializado en Scrum, Kanban y Lean Six Sigma.',
     
     'hero.subtitle': '11+ AÑOS DE EXPERIENCIA EN INNOVACIÓN',
     'hero.title.1': 'IT',
