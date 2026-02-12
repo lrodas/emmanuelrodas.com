@@ -16,7 +16,7 @@ export const ui = {
     'nav.contact': 'Contact Me',
     
     'hero.subtitle': '11+ YEARS OF INNOVATION EXPERIENCE',
-    'hero.title.1': 'Strategic',
+    'hero.title.1': 'IT',
     'hero.title.2': 'Project',
     'hero.title.3': 'Manager.',
     'hero.description': 'Project Manager with over 11 years of experience leading technological projects and multidisciplinary teams in agile environments. Specialized in Scrum, Kanban, and Lean Six Sigma, I have managed digital transformation initiatives, optimizing processes and ensuring solutions aligned with strategic business objectives.',
